@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  model-compilation:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: model-compilation
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      - ./data:/app/data
+      - ./tests:/app/tests
+      - ./scripts:/app/scripts
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=development
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped

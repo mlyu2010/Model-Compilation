@@ -1,0 +1,35 @@
+# Base requirements - always install these
+-r requirements-base.txt
+
+# ============================================================================
+# OPTIONAL DEPENDENCIES - Install manually if needed
+# ============================================================================
+
+# Apache TVM (ML Compiler)
+# ------------------------
+# TVM is not available via standard PyPI. Install manually:
+#
+# Option 1 - tlcpack wheels (recommended):
+#   pip install tlcpack-nightly -f https://tlcpack.ai/wheels
+#
+# Option 2 - Conda:
+#   conda install -c conda-forge tvm
+#
+# Option 3 - Build from source:
+#   See: https://tvm.apache.org/docs/install/from_source.html
+#
+# Platform support: ✅ Linux  ✅ macOS  ✅ Windows
+
+# PyTorch XLA (OpenXLA Compiler)
+# -------------------------------
+# WARNING: XLA is ONLY available on Linux x86_64 with Google Cloud TPUs
+#
+# For Linux + TPU:
+#   pip install torch_xla[tpu] -f https://storage.googleapis.com/libtpu-releases/index.html
+#
+# Platform support: ✅ Linux+TPU  ❌ macOS  ❌ Windows  ❌ Apple Silicon
+#
+# If XLA is not available, the system automatically falls back to PyTorch JIT
+# with similar optimization capabilities. No functionality is lost.
+#
+# RECOMMENDATION: Use TVM instead for better cross-platform support.
