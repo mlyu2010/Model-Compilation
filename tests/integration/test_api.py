@@ -63,8 +63,13 @@ def test_export_model_kws(client):
     assert data["status"] == "success"
 
 
-def test_compile_endpoint(client):
+def test_compile_endpoint(client, temp_models_dir):
     """Test compilation endpoint."""
+    # Create a dummy model file for testing
+    from pathlib import Path
+    model_path = Path(temp_models_dir) / "test_model.onnx"
+    model_path.write_text("dummy onnx model")
+    
     request_data = {
         "model_name": "test_model",
         "model_type": "llm",
@@ -78,6 +83,23 @@ def test_compile_endpoint(client):
     data = response.json()
     assert "job_id" in data
     assert data["status"] == "pending"
+
+
+def test_compile_endpoint_missing_model(client):
+    """Test compilation endpoint with missing model file."""
+    request_data = {
+        "model_name": "nonexistent_model",
+        "model_type": "llm",
+        "compiler": "tvm",
+        "target_platform": "x86",
+        "export_format": "onnx",
+    }
+    response = client.post("/api/v1/compile", json=request_data)
+    # Expect 404 when model file doesn't exist
+    assert response.status_code == 404
+    data = response.json()
+    assert "detail" in data
+    assert "Model not found" in data["detail"]
 
 
 def test_list_compilation_jobs(client):

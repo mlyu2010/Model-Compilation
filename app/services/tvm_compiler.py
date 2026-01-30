@@ -53,8 +53,12 @@ class TVMCompiler:
             )
         if not TVM_AVAILABLE:
             raise ImportError(
-                "TVM is not installed. Install it with: "
-                "pip install tlcpack-nightly -f https://tlcpack.ai/wheels"
+                "TVM is not installed. "
+                "TVM installation requires platform-specific steps:\n"
+                "  - For x86_64 Linux: pip install apache-tvm\n"
+                "  - For ARM64/Apple Silicon: TVM may not be available due to numpy compatibility issues\n"
+                "  - Alternative: Use OpenXLA compiler instead (set compiler='openxla' in request)\n"
+                "See Dockerfile comments for more details."
             )
         self.binaries_dir = Path(settings.binaries_dir)
         self.binaries_dir.mkdir(parents=True, exist_ok=True)

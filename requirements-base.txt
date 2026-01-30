@@ -8,10 +8,10 @@ pydantic-settings==2.6.0
 
 # ML Frameworks
 # Using flexible versions to avoid conflicts
-torch>=2.9.0,<3.0.0
-torchvision>=0.24.0,<1.0.0
-# Skip ONNX for now - causes build issues on ARM
-# onnx will be installed only if needed
+torch>=2.0.0,<3.0.0
+torchvision>=0.15.0,<1.0.0
+ml_dtypes>=0.5.0
+onnx>=1.16.0
 onnxruntime>=1.20.0
 
 # Model Export

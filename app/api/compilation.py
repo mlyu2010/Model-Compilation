@@ -44,6 +44,23 @@ async def compile_model(
         Compilation response with job ID
     """
     try:
+        # Validate model exists before creating job
+        from pathlib import Path
+
+        if request.compiler == CompilerType.TVM:
+            model_path = Path(settings.models_dir) / f"{request.model_name}.onnx"
+        elif request.compiler == CompilerType.OPENXLA:
+            model_path = Path(settings.models_dir) / f"{request.model_name}.pt"
+        else:
+            raise HTTPException(
+                status_code=400, detail=f"Unsupported compiler: {request.compiler}"
+            )
+
+        if not model_path.exists():
+            raise HTTPException(
+                status_code=404, detail=f"Model not found: {model_path}"
+            )
+
         # Generate job ID
         job_id = str(uuid.uuid4())
 
@@ -77,6 +94,8 @@ async def compile_model(
             message=f"Compilation job started with ID: {job_id}",
         )
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error starting compilation: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

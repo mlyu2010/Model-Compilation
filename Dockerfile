@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
@@ -20,9 +20,14 @@ COPY requirements-base.txt requirements.txt ./
 # Install base Python dependencies
 RUN pip install --no-cache-dir -r requirements-base.txt
 
-# Try to install TVM from tlcpack (optional, may fail)
-RUN pip install --no-cache-dir tlcpack-nightly -f https://tlcpack.ai/wheels || \
-    echo "Warning: TVM installation failed. TVM features will not be available."
+# Apache TVM installation (optional)
+# Note: TVM is not installed by default due to platform compatibility issues:
+# - apache-tvm requires numpy<=1.23 which lacks ARM64 wheels
+# - Building numpy from source often fails on ARM64/Apple Silicon
+# - TVM features will be unavailable, but the application will still run
+# To enable TVM on x86_64 Linux, uncomment the following line:
+# RUN pip install --no-cache-dir apache-tvm
+RUN echo "Note: TVM is not installed. TVM compilation features will be unavailable."
 
 # Copy application code
 COPY . .
